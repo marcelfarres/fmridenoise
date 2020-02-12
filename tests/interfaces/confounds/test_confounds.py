@@ -9,8 +9,7 @@ import json
 
 class TestConfounds(ut.TestCase):
 
-    @classmethod
-    def setUpClass(cls) -> None:
+    def setUp(self) -> None:
         pipeline = load_pipeline_from_json(get_pipelines_paths({'pipeline-ICA-AROMA_8Phys'}).pop())
         conf_raw = join(dirname(__file__),
         "sub-01_ses-1_task-audionback_desc-confounds_regressors.tsv")
@@ -20,7 +19,7 @@ class TestConfounds(ut.TestCase):
         session = '1'
         task = 'audionback'
         output_dir = dirname(__file__)
-        cls.confound = Confounds(
+        self.confound = Confounds(
             output_dir = output_dir,
             pipeline = pipeline,
             conf_raw=conf_raw,
@@ -30,8 +29,7 @@ class TestConfounds(ut.TestCase):
             task=task
         )
 
-    @classmethod
-    def tearDownClass(cls) -> None:
+    def tearDown(self) -> None:
         to_remove = glob(join(dirname(__file__), "*pipeline*"))
         for path in to_remove:
             remove(path)
@@ -41,10 +39,10 @@ class TestConfounds(ut.TestCase):
         node.run()
         self.assertEqual(
             node.get_output('conf_prep'),
-            join(dirname(__file__), "sub-01_ses-1_task-audionback_desc-confounds_regressors_prep_pipeline-ICA-AROMA_8Phys.tsv"))
+            join(dirname(__file__), "sub-01_ses-1_task-audionback_desc-confounds_pipeline-ICAAROMA8Phys_conf.tsv"))
         self.assertEqual(
             node.get_output('conf_summary_json_file'),
-            join(dirname(__file__), "sub-01_ses-1_task-audionback_desc-confounds_regressors_prep_pipeline-ICA-AROMA_8Phys_summary_dict.json"))
+            join(dirname(__file__), "sub-01_ses-1_task-audionback_desc-confounds_pipeline-ICAAROMA8Phys_summaryDict.json"))
 
     def test_valid_json_content(self) -> None:
         expected_dict = {
